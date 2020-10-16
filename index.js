@@ -10,25 +10,29 @@ const average = (dataArray = []) => {
 
 const getMicInput = (length = 512, audioContent = new AudioContext()) => {
 
-	const soundAllowed = function(stream) {
-		window.persistAudioStream = stream;
-		const audioStream = audioContent.createMediaStreamSource(stream);
-		const analyser = audioContent.createAnalyser();
-		audioStream.connect(analyser);
-		analyser.fftSize = length;
-		return analyser
-	}
+	const promise =	new Promise((resolve, reject) => {
+		const soundAllowed = function (stream) {
+			window.persistAudioStream = stream;
+			const audioStream = audioContent.createMediaStreamSource(stream);
+			const analyser = audioContent.createAnalyser();
+			audioStream.connect(analyser);
+			analyser.fftSize = length;
+			resolve( analyser )
+		}
 
-	const soundNotAllowed = function(error) {
-		console.log(error);
-	};
+		const soundNotAllowed = function (error) {
+			console.log(error);
+			reject(error)
+		};
 
-	/*window.navigator = window.navigator || {};
-	/*navigator.getUserMedia =  navigator.getUserMedia       ||
-														navigator.webkitGetUserMedia ||
-														navigator.mozGetUserMedia    ||
-														null;*/
-	navigator.getUserMedia({ audio: true }, soundAllowed, soundNotAllowed);
+		/*window.navigator = window.navigator || {};
+		/*navigator.getUserMedia =  navigator.getUserMedia       ||
+															navigator.webkitGetUserMedia ||
+															navigator.mozGetUserMedia    ||
+															null;*/
+		navigator.getUserMedia({audio: true}, soundAllowed, soundNotAllowed);
+	})
+	return promise
 }
 
 const getFrequencies = (analyser, frequencies ) => {

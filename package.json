@@ -1,6 +1,6 @@
 {
   "name": "audioparser",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Small library to make the best of web audio api",
   "main": "index.js",
   "scripts": {
